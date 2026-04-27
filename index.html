@@ -1,114 +1,136 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Anime Trader Prompt Builder</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avatar Anime – Prompt Base</title>
   <style>
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,sans-serif;
-      background:linear-gradient(135deg,#020617,#0f172a);
-      color:#e5e7eb; padding:24px;
-    }
-    .container{max-width:1100px;margin:auto;display:grid;gap:24px}
-    h1{margin:0;font-size:1.8rem}
-    p{opacity:.85;max-width:760px}
-    .card{background:#020617;border:1px solid #1e293b;border-radius:18px;padding:20px;box-shadow:0 15px 40px rgba(0,0,0,.4)}
-    .character{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center}
-    .avatar{border-radius:16px;overflow:hidden;border:1px solid #334155}
-    .avatar img{width:100%;display:block}
-    textarea{width:100%;min-height:260px;background:#020617;color:#e5e7eb;border:1px solid #334155;border-radius:14px;padding:16px;font-size:.95rem;line-height:1.55}
-    .toolbar{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
-    button{background:#020617;border:1px solid #334155;color:#e5e7eb;border-radius:12px;padding:10px 16px;cursor:pointer;transition:.2s}
-    button:hover{border-color:#22d3ee;color:#22d3ee}
-    .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-    .option{border:1px solid #334155;border-radius:14px;padding:14px;cursor:pointer;transition:.2s;background:#020617}
-    .option:hover{border-color:#38bdf8;transform:translateY(-2px)}
-    .option.active{border-color:#22d3ee;background:rgba(34,211,238,.08)}
-    footer{text-align:center;font-size:.75rem;opacity:.5}
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.image-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.image-wrapper img {
+  max-width: 280px;
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.prompt-card {
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(8px);
+}
+
+.prompt-card h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+textarea {
+  width: 100%;
+  min-height: 260px;
+  resize: vertical;
+  border-radius: 14px;
+  border: none;
+  padding: 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+textarea:focus {
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+footer {
+  font-size: 0.75rem;
+  opacity: 0.6;
+  text-align: center;
+}
+
   </style>
 </head>
 <body>
-<div class="container">
-  <div>
-    <h1>🎨 Anime Trader Prompt Builder</h1>
-    <p>Ferramenta autoral para criar prompts consistentes de arte anime a partir de prints de gráfico. Personagem fixo, emoções e reação de mercado configuráveis.</p>
-  </div>  <div class="card character">
-    <div class="avatar">
-      <img src="avatar.png" alt="Personagem padrão" />
-    </div>
-    <div>
-      <textarea id="prompt"></textarea>
-      <div class="toolbar">
-        <button onclick="copyPrompt()">📋 Copiar prompt</button>
-        <button onclick="resetOptions()">♻ Resetar opções</button>
-      </div>
-    </div>
-  </div>  <div class="card">
-    <h2>🎭 Humor do Personagem</h2>
-    <div class="options" id="humorOptions"></div>
-  </div>  <div class="card">
-    <h2>📈 Reação do Mercado</h2>
-    <div class="options" id="marketOptions"></div>
-  </div>  <footer>
-    Projeto independente • Pode evoluir para produto • GitHub Pages Ready
-  </footer>
-</div><script>
-const basePrompt = `Crie uma imagem em estilo anime moderno e vibrante, com line-art marcante e leve variação de espessura, cel shading mínimo e sombras chapadas.\n\nPersonagem fixo: homem negro brasileiro inspirado em traços reais, pele marrom escura com subtom quente, rosto alongado e elegante, maxilar definido, nariz médio largo natural, lábios cheios, barba curta bem desenhada em estilo anime. Cabelo preto com volume natural afro/dread estilizado em anime, textura bem definida. Olhos grandes e expressivos, olhar inteligente e confiante.\n\nEstilo cartoon exagerado, proporções levemente alongadas, estética carismática e forte presença. O personagem aparece sempre como trader/analisador de gráficos, interagindo diretamente com um gráfico financeiro (candlestick) estilizado.\n\nAmbiente: mundo totalmente estilizado e não realista, com leve distorção de perspectiva, estética dinâmica, elementos gráficos simplificados, energia de HQ/mangá. Cores brilhantes e saturadas, iluminação gráfica limpa.\n\nHumor do personagem:`;
+  <div class="container"><!-- Imagem fixa do repositório -->
+<div class="image-wrapper">
+  <img src="./jonanime.png" alt="Avatar Anime Base" />
+</div>
 
-const humors = {
-  "🚀 Euforia / Rompimento": "expressão extremamente confiante e empolgada, sorriso largo, pose dinâmica apontando para cima, sensação de explosão e vitória",
-  "🧠 Análise / Consolidação": "expressão focada e analítica, postura pensativa, energia de estudo e observação",
-  "😬 Tensão / Pullback": "expressão tensa e concentrada, sobrancelhas franzidas, sensação de risco iminente",
-  "😎 Confiança / Tendência": "expressão calma e confiante, leve sorriso, postura relaxada e controle total",
-  "😈 Ironia / Fakeout": "expressão irônica e malandra, sorriso de canto de boca, clima de pegadinha do mercado"
-};
+<!-- Card do prompt -->
+<div class="prompt-card">
+  <h1>Prompt Base (editável)</h1>
+  <textarea id="prompt">
 
-const markets = {
-  "📊 Consolidação": "mercado lateral, candles compactos, sensação de compressão",
-  "🔥 Rompimento": "rompimento explosivo, candles longos, energia ascendente",
-  "🔄 Pullback": "movimento de correção controlada após alta",
-  "⚠ Volatilidade": "movimentos rápidos e caóticos, clima de instabilidade"
-};
+Crie uma imagem em um estilo de arte anime popular a partir do elemento enviado. Use line-work marcante, com leve variação, e cel shading mínimo com formas chapadas de sombra. Use cores brilhantes e saturadas e uma iluminação gráfica limpa. O estilo traz proporções de personagem exageradas e em estilo cartoon, com traços faciais simples e muito expressivos que permitem uma ampla gama de emoções, além de anatomia alongada e bem variada. Transforme o ambiente em um espaço levemente distorcido, com uma distorção de perspectiva divertida e objetos simplificados. A composição e o tom devem ter energia, animação e comicidade, em um mundo totalmente estilizado e não realista. </textarea>
 
-const promptBox = document.getElementById('prompt');
-const humorContainer = document.getElementById('humorOptions');
-const marketContainer = document.getElementById('marketOptions');
+<div class="actions">
+    <button onclick="copiarPrompt()">Copiar prompt</button>
+  </div>
+</div>
 
-let selectedHumor = "";
-let selectedMarket = "";
+<footer>
+  Avatar anime • prompt base fixo • pronto para evoluir por emoções e cards
+</footer>
 
-function updatePrompt(){
-  promptBox.value = basePrompt + '\n' + selectedHumor + '\nReação do mercado: ' + selectedMarket + '.';
-}
-
-function createOptions(container, data, type){
-  Object.entries(data).forEach(([label,text])=>{
-    const div=document.createElement('div');
-    div.className='option'; div.innerText=label;
-    div.onclick=()=>{
-      [...container.children].forEach(o=>o.classList.remove('active'));
-      div.classList.add('active');
-      if(type==='humor') selectedHumor=text;
-      if(type==='market') selectedMarket=text;
-      updatePrompt();
-    };
-    container.appendChild(div);
-  });
-}
-
-function copyPrompt(){
-  navigator.clipboard.writeText(promptBox.value);
-  alert('Prompt copiado!');
-}
-
-function resetOptions(){
-  selectedHumor=''; selectedMarket='';
-  document.querySelectorAll('.option').forEach(o=>o.classList.remove('active'));
-  updatePrompt();
-}
-
-createOptions(humorContainer, humors, 'humor');
-createOptions(marketContainer, markets, 'market');
-updatePrompt();
-</script></body>
+  </div>  <script>
+    function copiarPrompt() {
+      const textarea = document.getElementById('prompt');
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(textarea.value);
+      alert('Prompt copiado!');
+    }
+  </script></body>
 </html>
