@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EMC3 — Avatar Creator · Jon & Aurora</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090f;
+  --panel:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.08);
+  --green:#00ff88;
+  --red:#ff3b5c;
+  --yellow:#ffd200;
+  --blue:#00c8ff;
+  --white:#f0f4ff;
+  --muted:rgba(240,244,255,0.4);
+  --font-display:'Bebas Neue',sans-serif;
+  --font-ui:'Syne',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  min-height:100vh;background:var(--bg);color:var(--white);
+  font-family:var(--font-ui);
+  background-image:
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(0,200,255,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 30% at 90% 110%, rgba(0,255,136,0.05) 0%, transparent 60%);
+  padding:0 0 60px;
+}
+
+/* ── TICKER ── */
+.ticker-wrap{
+  width:100%;overflow:hidden;background:rgba(0,200,255,0.06);
+  border-bottom:1px solid rgba(0,200,255,0.15);
+  padding:8px 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);
+}
+.ticker{display:flex;gap:0;white-space:nowrap;animation:tickerScroll 28s linear infinite;}
+.ticker-item{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;
+  padding:0 28px;color:var(--muted);
+}
+.ticker-item .up{color:var(--green);}
+.ticker-item .dn{color:var(--red);}
+@keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ── HEADER ── */
+header{
+  display:flex;align-items:center;gap:18px;
+  padding:28px 24px 0;max-width:960px;margin:0 auto;
+}
+.avatar-ring{
+  width:64px;height:64px;border-radius:50%;flex-shrink:0;
+  border:2px solid var(--blue);
+  box-shadow:0 0 0 4px rgba(0,200,255,0.12),0 0 24px rgba(0,200,255,0.2);
+  overflow:hidden;background:#111;
+}
+.avatar-ring img{width:100%;height:100%;object-fit:cover;display:block;}
+.header-text h1{
+  font-family:var(--font-display);font-size:clamp(26px,5vw,38px);
+  letter-spacing:.08em;line-height:1;color:var(--white);
+}
+.header-text p{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;
+  color:var(--muted);margin-top:4px;text-transform:uppercase;
+}
+.header-badge{
+  margin-left:auto;flex-shrink:0;
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;
+  border:1px solid rgba(0,255,136,0.3);color:var(--green);
+  padding:5px 12px;border-radius:20px;
+  background:rgba(0,255,136,0.06);
+  animation:badgePulse 2.5s ease-in-out infinite;
+}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,136,0.2);}50%{box-shadow:0 0 0 6px rgba(0,255,136,0);}}
+
+/* ── MAIN LAYOUT ── */
+main{
+  max-width:960px;margin:24px auto 0;padding:0 16px;
+  display:grid;grid-template-columns:1fr;gap:20px;
+}
+@media(min-width:720px){main{grid-template-columns:1fr 1fr;}}
+
+/* ── PROMPT PANEL ── */
+.panel{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:20px;padding:22px;
+}
+.panel-title{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;
+  color:var(--muted);text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.panel-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0;}
+
+textarea{
+  width:100%;min-height:130px;background:rgba(0,0,0,0.3);
+  border:1px solid rgba(255,255,255,0.07);border-radius:12px;
+  padding:14px;color:var(--white);font-family:var(--font-mono);
+  font-size:12px;line-height:1.6;resize:vertical;outline:none;
+  transition:border .3s;
+}
+textarea:focus{border-color:rgba(0,200,255,0.4);}
+
+.btn-row{display:flex;gap:10px;margin-top:12px;}
+.btn{
+  flex:1;padding:11px;border:1px solid var(--border);border-radius:10px;
+  background:rgba(255,255,255,0.05);color:var(--white);
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;
+  cursor:pointer;transition:all .2s;text-transform:uppercase;
+}
+.btn:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.2);}
+.btn.primary{background:rgba(0,200,255,0.1);border-color:rgba(0,200,255,0.4);color:var(--blue);}
+.btn.primary:hover{background:rgba(0,200,255,0.2);}
+.btn.danger{background:rgba(255,59,92,0.1);border-color:rgba(255,59,92,0.4);color:var(--red);}
+
+/* ── SECTION LABEL ── */
+.section-label{
+  grid-column:1/-1;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.25em;
+  color:var(--muted);text-transform:uppercase;
+  padding:4px 0 2px;border-top:1px solid var(--border);margin-top:8px;
+}
+
+/* ── PRESET GRID ── */
+.presets-full{grid-column:1/-1;}
+.presets-section-title{
+  font-family:var(--font-display);font-size:20px;letter-spacing:.1em;
+  color:var(--white);margin-bottom:14px;
+}
+.presets-group{margin-bottom:22px;}
+.group-label{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.25em;
+  color:var(--muted);text-transform:uppercase;margin-bottom:10px;
+  padding-left:2px;display:flex;align-items:center;gap:8px;
+}
+.group-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.cards-row{
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.card{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:12px 10px;min-width:80px;
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  cursor:pointer;transition:all .18s;text-align:center;
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;inset:0;opacity:0;
+  background:radial-gradient(circle at center,rgba(255,255,255,0.1),transparent 70%);
+  transition:opacity .2s;
+}
+.card:hover::before{opacity:1;}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.2);}
+.card:active{transform:scale(.95);}
+
+/* cores por grupo */
+.card.green{border-color:rgba(0,255,136,0.2);}
+.card.green:hover{border-color:rgba(0,255,136,0.5);box-shadow:0 4px 20px rgba(0,255,136,0.12);}
+.card.red{border-color:rgba(255,59,92,0.2);}
+.card.red:hover{border-color:rgba(255,59,92,0.5);box-shadow:0 4px 20px rgba(255,59,92,0.12);}
+.card.yellow{border-color:rgba(255,210,0,0.2);}
+.card.yellow:hover{border-color:rgba(255,210,0,0.5);box-shadow:0 4px 20px rgba(255,210,0,0.12);}
+.card.blue{border-color:rgba(0,200,255,0.2);}
+.card.blue:hover{border-color:rgba(0,200,255,0.5);box-shadow:0 4px 20px rgba(0,200,255,0.12);}
+.card.purple{border-color:rgba(180,100,255,0.2);}
+.card.purple:hover{border-color:rgba(180,100,255,0.5);box-shadow:0 4px 20px rgba(180,100,255,0.12);}
+.card.orange{border-color:rgba(255,140,0,0.2);}
+.card.orange:hover{border-color:rgba(255,140,0,0.5);box-shadow:0 4px 20px rgba(255,140,0,0.12);}
+
+.card-icon{font-size:1.7rem;line-height:1;}
+.card-label{
+  font-family:var(--font-mono);font-size:9px;line-height:1.3;
+  color:var(--white);font-weight:600;letter-spacing:.03em;
+}
+.card-sub{
+  font-family:var(--font-mono);font-size:7.5px;
+  color:var(--muted);line-height:1.2;
+}
+
+/* added flash */
+.card.added{animation:flashCard .4s ease;}
+@keyframes flashCard{0%{background:rgba(0,200,255,0.25);}100%{background:var(--panel);}}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(10,15,30,0.95);border:1px solid rgba(0,200,255,0.35);
+  border-radius:40px;padding:11px 24px;
+  font-family:var(--font-mono);font-size:12px;color:var(--blue);
+  box-shadow:0 0 24px rgba(0,200,255,0.2);
+  opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker">
+    <span class="ticker-item">IBOV <span class="up">▲ +1.23%</span></span>
+    <span class="ticker-item">WIN <span class="up">▲ 131.450</span></span>
+    <span class="ticker-item">WDO <span class="dn">▼ 5.742</span></span>
+    <span class="ticker-item">BTC <span class="up">▲ $68.200</span></span>
+    <span class="ticker-item">PETR4 <span class="up">▲ +0.87%</span></span>
+    <span class="ticker-item">VALE3 <span class="dn">▼ -0.54%</span></span>
+    <span class="ticker-item">DÓLAR <span class="dn">▼ R$ 5.08</span></span>
+    <span class="ticker-item">S&P500 <span class="up">▲ +0.41%</span></span>
+    <span class="ticker-item">NASDAQ <span class="up">▲ +0.67%</span></span>
+    <span class="ticker-item">OURO <span class="up">▲ $2.340</span></span>
+    <!-- duplicado para loop suave -->
+    <span class="ticker-item">IBOV <span class="up">▲ +1.23%</span></span>
+    <span class="ticker-item">WIN <span class="up">▲ 131.450</span></span>
+    <span class="ticker-item">WDO <span class="dn">▼ 5.742</span></span>
+    <span class="ticker-item">BTC <span class="up">▲ $68.200</span></span>
+    <span class="ticker-item">PETR4 <span class="up">▲ +0.87%</span></span>
+    <span class="ticker-item">VALE3 <span class="dn">▼ -0.54%</span></span>
+    <span class="ticker-item">DÓLAR <span class="dn">▼ R$ 5.08</span></span>
+    <span class="ticker-item">S&P500 <span class="up">▲ +0.41%</span></span>
+    <span class="ticker-item">NASDAQ <span class="up">▲ +0.67%</span></span>
+    <span class="ticker-item">OURO <span class="up">▲ $2.340</span></span>
+  </div>
+</div>
+
+<header>
+  <div class="avatar-ring">
+    <img src="data:image/jpeg;base64,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" alt="Jon" id="avatarImg">
+  </div>
+  <div class="header-text">
+    <h1>EMC3 AVATAR CREATOR</h1>
+    <p>by Jon Padilha &amp; Aurora · daytrade edition</p>
+  </div>
+  <div class="header-badge">● AO VIVO</div>
+</header>
+
+<main>
+
+  <!-- PROMPT EDITOR -->
+  <div class="panel" style="grid-column:1/-1;">
+    <div class="panel-title">Prompt Editor</div>
+    <textarea id="prompt">Anime style illustration of a tall, athletic Black Brazilian man named Jon. He has dark brown skin, short natural afro hair (low cut, tight coils), strong defined jaw, sharp facial features, thick eyebrows, broad shoulders and an imposing muscular build. He is confident and charismatic. Use bold line-work, cel shading with flat shadow shapes, bright saturated colors and clean graphic lighting. Exaggerated cartoon proportions with simple expressive facial features. The character must consistently maintain: dark skin tone, short afro hairstyle, strong jawline, athletic body type. Style reference: modern shounen anime, high energy composition.</textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="copiar()">⎘ Copiar Prompt</button>
+      <button class="btn danger" onclick="limpar()">✕ Limpar</button>
+    </div>
+  </div>
+
+  <!-- TODOS OS PRESETS -->
+  <div class="presets-full">
+
+    <!-- MERCADO -->
+    <div class="presets-group">
+      <div class="group-label">📈 Mercado · Tendência</div>
+      <div class="cards-row">
+        <div class="card green" onclick="add('tendência de alta forte, mercado eufórico subindo, gráfico de candlestick disparando para cima, luzes verdes piscando')">
+          <div class="card-icon">📈</div>
+          <div class="card-label">Alta</div>
+          <div class="card-sub">Bullish</div>
+        </div>
+        <div class="card red" onclick="add('tendência de baixa intensa, mercado em pânico, gráfico caindo, velas vermelhas dominando a tela')">
+          <div class="card-icon">📉</div>
+          <div class="card-label">Baixa</div>
+          <div class="card-sub">Bearish</div>
+        </div>
+        <div class="card yellow" onclick="add('mercado lateralizado, sem direção, preço oscilando em range estreito, calmaria tensa')">
+          <div class="card-icon">↔️</div>
+          <div class="card-label">Lateral</div>
+          <div class="card-sub">Range</div>
+        </div>
+        <div class="card blue" onclick="add('reversão de tendência, virada do mercado, ponto de inflexão no gráfico, mudança de direção dramática')">
+          <div class="card-icon">🔄</div>
+          <div class="card-label">Reversão</div>
+          <div class="card-sub">Pivot</div>
+        </div>
+        <div class="card green" onclick="add('rompimento de resistência, breakout explosivo, volume alto, sinal de entrada confirmado')">
+          <div class="card-icon">💥</div>
+          <div class="card-label">Breakout</div>
+          <div class="card-sub">Rompimento</div>
+        </div>
+        <div class="card red" onclick="add('mercado em colapso, crash financeiro, queda livre, investidores em desespero')">
+          <div class="card-icon">🔻</div>
+          <div class="card-label">Crash</div>
+          <div class="card-sub">Colapso</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUMOR DO MERCADO -->
+    <div class="presets-group">
+      <div class="group-label">🧠 Humor do Mercado</div>
+      <div class="cards-row">
+        <div class="card green" onclick="add('humor de mercado extremamente otimista, ganância máxima, euforia coletiva, traders comemorando lucros')">
+          <div class="card-icon">🤑</div>
+          <div class="card-label">Ganância</div>
+          <div class="card-sub">Greed</div>
+        </div>
+        <div class="card red" onclick="add('humor de mercado com medo extremo, pânico generalizado, traders nervosos e preocupados')">
+          <div class="card-icon">😱</div>
+          <div class="card-label">Pânico</div>
+          <div class="card-sub">Fear</div>
+        </div>
+        <div class="card yellow" onclick="add('mercado incerto, dúvida entre traders, indecisão coletiva, aguardando catalisador')">
+          <div class="card-icon">🤔</div>
+          <div class="card-label">Incerteza</div>
+          <div class="card-sub">Dúvida</div>
+        </div>
+        <div class="card blue" onclick="add('trader confiante e focado, zen diante dos gráficos, total controle emocional')">
+          <div class="card-icon">🧘</div>
+          <div class="card-label">Zen</div>
+          <div class="card-sub">Foco</div>
+        </div>
+        <div class="card orange" onclick="add('frustração após stop loss, trader irritado com o mercado, raiva controlada')">
+          <div class="card-icon">😤</div>
+          <div class="card-label">Frustração</div>
+          <div class="card-sub">Stop Loss</div>
+        </div>
+        <div class="card green" onclick="add('celebração de lucro, trade vencedor, euforia de ganho, braços para cima')">
+          <div class="card-icon">🏆</div>
+          <div class="card-label">Vitória</div>
+          <div class="card-sub">Lucro</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SINAIS E ALERTAS -->
+    <div class="presets-group">
+      <div class="group-label">⚡ Sinais · Alertas</div>
+      <div class="cards-row">
+        <div class="card yellow" onclick="add('URGENTE, alerta máximo, sinal piscando, situação crítica no mercado, atenção total requerida')">
+          <div class="card-icon">🚨</div>
+          <div class="card-label">Urgente</div>
+          <div class="card-sub">Alerta Max</div>
+        </div>
+        <div class="card green" onclick="add('sinal de entrada confirmado, setup perfeito identificado, oportunidade de compra clara')">
+          <div class="card-icon">🎯</div>
+          <div class="card-label">Sinal</div>
+          <div class="card-sub">Entrada</div>
+        </div>
+        <div class="card red" onclick="add('stop loss atingido, saída de emergência, proteção do capital ativada')">
+          <div class="card-icon">🛑</div>
+          <div class="card-label">Stop</div>
+          <div class="card-sub">Saída</div>
+        </div>
+        <div class="card blue" onclick="add('alvo de lucro atingido, take profit executado, missão cumprida')">
+          <div class="card-icon">✅</div>
+          <div class="card-label">Alvo</div>
+          <div class="card-sub">Take Profit</div>
+        </div>
+        <div class="card purple" onclick="add('análise técnica profunda, leitura de gráficos, estudo de padrões avançados')">
+          <div class="card-icon">🔍</div>
+          <div class="card-label">Análise</div>
+          <div class="card-sub">Setup</div>
+        </div>
+        <div class="card orange" onclick="add('notícia macroeconômica explosiva, evento fundamental impactando o mercado')">
+          <div class="card-icon">📰</div>
+          <div class="card-label">Notícia</div>
+          <div class="card-sub">Macro</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMOÇÕES / EXPRESSÕES -->
+    <div class="presets-group">
+      <div class="group-label">😎 Emoções · Expressões</div>
+      <div class="cards-row">
+        <div class="card yellow" onclick="add('expressão de confiança absoluta, sorriso de quem sabe o que está fazendo, postura dominante')">
+          <div class="card-icon">😎</div>
+          <div class="card-label">Confiança</div>
+        </div>
+        <div class="card red" onclick="add('expressão de determinação feroz, olhar intenso e resoluto, foco total')">
+          <div class="card-icon">😤</div>
+          <div class="card-label">Determinação</div>
+        </div>
+        <div class="card green" onclick="add('sorriso de celebração amplo e radiante, alegria genuína, euforia positiva')">
+          <div class="card-icon">😄</div>
+          <div class="card-label">Alegria</div>
+        </div>
+        <div class="card blue" onclick="add('expressão séria e analítica, rosto pensativo, concentração total nos dados')">
+          <div class="card-icon">🧐</div>
+          <div class="card-label">Análise</div>
+        </div>
+        <div class="card orange" onclick="add('expressão de surpresa com o mercado, choque positivo, olhos arregalados')">
+          <div class="card-icon">😮</div>
+          <div class="card-label">Surpresa</div>
+        </div>
+        <div class="card purple" onclick="add('postura épica heroica, como um guerreiro do mercado financeiro, imponente')">
+          <div class="card-icon">💪</div>
+          <div class="card-label">Épico</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUAL / ESTILO -->
+    <div class="presets-group">
+      <div class="group-label">🎨 Visual · Estilo</div>
+      <div class="cards-row">
+        <div class="card blue" onclick="add('terno azul marinho elegante, camisa branca aberta no colarinho, estilo executivo moderno')">
+          <div class="card-icon">👔</div>
+          <div class="card-label">Terno Azul</div>
+        </div>
+        <div class="card yellow" onclick="add('terno cinza grafite premium, gravata dourada, estilo Wall Street')">
+          <div class="card-icon">🧥</div>
+          <div class="card-label">Terno Cinza</div>
+        </div>
+        <div class="card red" onclick="add('look casual streetwear, moletom com capuz, boné, estilo jovem e arrojado')">
+          <div class="card-icon">🧢</div>
+          <div class="card-label">Streetwear</div>
+        </div>
+        <div class="card purple" onclick="add('segurando tablet com gráficos em tempo real, múltiplas telas ao fundo')">
+          <div class="card-icon">💻</div>
+          <div class="card-label">Setup Trade</div>
+        </div>
+        <div class="card green" onclick="add('segurando celular com app de trading aberto, notificação de lucro na tela')">
+          <div class="card-icon">📱</div>
+          <div class="card-label">Mobile</div>
+        </div>
+        <div class="card orange" onclick="add('óculos escuros modernos, estilo premium e inacessível, look de trader de sucesso')">
+          <div class="card-icon">🕶️</div>
+          <div class="card-label">Óculos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENÁRIO / FUNDO -->
+    <div class="presets-group">
+      <div class="group-label">🏙️ Cenário · Fundo</div>
+      <div class="cards-row">
+        <div class="card blue" onclick="add('fundo com sala de operações moderna, múltiplos monitores com gráficos, ambiente de trading room profissional')">
+          <div class="card-icon">🖥️</div>
+          <div class="card-label">Trading Room</div>
+        </div>
+        <div class="card yellow" onclick="add('fundo com vista panorâmica do skyline de São Paulo ou Nova York ao entardecer, janela de cobertura')">
+          <div class="card-icon">🏙️</div>
+          <div class="card-label">Skyline</div>
+        </div>
+        <div class="card green" onclick="add('fundo com gráfico de candlestick gigante, linhas de suporte e resistência visíveis')">
+          <div class="card-icon">📊</div>
+          <div class="card-label">Gráfico</div>
+        </div>
+        <div class="card purple" onclick="add('ambiente cyberpunk futurista com dados financeiros holográficos flutuando, neon colorido')">
+          <div class="card-icon">🌆</div>
+          <div class="card-label">Cyberpunk</div>
+        </div>
+        <div class="card red" onclick="add('fundo abstrato com chuva de dinheiro, notas caindo do céu, riqueza abundante')">
+          <div class="card-icon">💰</div>
+          <div class="card-label">Money Rain</div>
+        </div>
+        <div class="card orange" onclick="add('fundo com escritório de luxo, madeira escura, iluminação dourada, estilo elite financeira')">
+          <div class="card-icon">🏛️</div>
+          <div class="card-label">Escritório VIP</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIMA -->
+    <div class="presets-group">
+      <div class="group-label">🌤️ Clima</div>
+      <div class="cards-row">
+        <div class="card yellow" onclick="add('luz de sol intensa e dourada, dia ensolarado vibrante, iluminação calorosa e otimista')">
+          <div class="card-icon">☀️</div>
+          <div class="card-label">Sol</div>
+        </div>
+        <div class="card blue" onclick="add('dia chuvoso intenso, chuva batendo na janela, iluminação fria e dramática')">
+          <div class="card-icon">🌧️</div>
+          <div class="card-label">Chuva</div>
+        </div>
+        <div class="card purple" onclick="add('tempestade elétrica, raios no fundo, energia intensa e caótica, clima de tensão')">
+          <div class="card-icon">⛈️</div>
+          <div class="card-label">Tempestade</div>
+        </div>
+        <div class="card blue" onclick="add('neblina densa e misteriosa, visibilidade baixa, clima de suspense e incerteza')">
+          <div class="card-icon">🌫️</div>
+          <div class="card-label">Neblina</div>
+        </div>
+        <div class="card green" onclick="add('pôr do sol espetacular, cores quentes laranja e roxo no céu, fim de um dia vitorioso')">
+          <div class="card-icon">🌅</div>
+          <div class="card-label">Pôr do Sol</div>
+        </div>
+        <div class="card red" onclick="add('vento forte e dramático, cabelo e roupas ao vento, energia dinâmica e poderosa')">
+          <div class="card-icon">💨</div>
+          <div class="card-label">Vento</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERÍODO DO DIA -->
+    <div class="presets-group">
+      <div class="group-label">🕐 Período do Dia</div>
+      <div class="cards-row">
+        <div class="card yellow" onclick="add('abertura do mercado de manhã, primeira hora do pregão, sol nascendo ao fundo, energia de início')">
+          <div class="card-icon">🌅</div>
+          <div class="card-label">Abertura</div>
+          <div class="card-sub">9h</div>
+        </div>
+        <div class="card orange" onclick="add('meio do pregão, horário de maior volatilidade, luz do meio-dia intensa')">
+          <div class="card-icon">☀️</div>
+          <div class="card-label">Meio do Pregão</div>
+          <div class="card-sub">12h</div>
+        </div>
+        <div class="card red" onclick="add('fechamento do mercado, últimos minutos do pregão, tensão máxima, corrida contra o relógio')">
+          <div class="card-icon">🔔</div>
+          <div class="card-label">Fechamento</div>
+          <div class="card-sub">17h</div>
+        </div>
+        <div class="card purple" onclick="add('noite de análise pós-mercado, luz azul dos monitores no escuro, foco total nos dados')">
+          <div class="card-icon">🌙</div>
+          <div class="card-label">Noite</div>
+          <div class="card-sub">Pós-mercado</div>
+        </div>
+        <div class="card blue" onclick="add('madrugada operando mercados internacionais, nova york e ásia, solidão e disciplina')">
+          <div class="card-icon">🌃</div>
+          <div class="card-label">Madrugada</div>
+          <div class="card-sub">Intl</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FESTAS / OCASIÕES -->
+    <div class="presets-group">
+      <div class="group-label">🎉 Festas · Ocasiões</div>
+      <div class="cards-row">
+        <div class="card yellow" onclick="add('comemorando o ano novo, fogos de artifício ao fundo, brinde com taça de champagne, energia de renovação e metas')">
+          <div class="card-icon">🎆</div>
+          <div class="card-label">Ano Novo</div>
+        </div>
+        <div class="card red" onclick="add('natal do trader, árvore de natal com cifrões, decoração com gráficos, clima festivo financeiro')">
+          <div class="card-icon">🎄</div>
+          <div class="card-label">Natal</div>
+        </div>
+        <div class="card green" onclick="add('carnaval trader, cores vibrantes, energia de festa, mas com foco nos resultados')">
+          <div class="card-icon">🎭</div>
+          <div class="card-label">Carnaval</div>
+        </div>
+        <div class="card orange" onclick="add('aniversário de sucesso, bolo com velas representando anos de trades, celebração de conquistas')">
+          <div class="card-icon">🎂</div>
+          <div class="card-label">Aniversário</div>
+        </div>
+        <div class="card blue" onclick="add('black friday do mercado financeiro, descontos e oportunidades explodindo, ofertas imperdíveis')">
+          <div class="card-icon">🛒</div>
+          <div class="card-label">Black Friday</div>
+        </div>
+        <div class="card purple" onclick="add('páscoa do mercado, caça aos lucros escondidos, ovos de ouro representando boas operações')">
+          <div class="card-icon">🐰</div>
+          <div class="card-label">Páscoa</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /presets-full -->
+</main>
+
+<div id="toast">✓ Copiado!</div>
+
+<script>
+function add(txt){
+  const ta=document.getElementById('prompt');
+  ta.value = ta.value.trim() + (ta.value.trim() ? ', ' : '') + txt;
+  // flash no textarea
+  ta.style.borderColor='rgba(0,200,255,0.6)';
+  setTimeout(()=>ta.style.borderColor='rgba(255,255,255,0.07)',600);
+  // anima o card clicado
+  const el=event.currentTarget;
+  el.classList.add('added');
+  setTimeout(()=>el.classList.remove('added'),400);
+  toast('Adicionado ao prompt!');
+}
+
+function copiar(){
+  const val=document.getElementById('prompt').value;
+  if(!val.trim()){toast('Prompt vazio!');return;}
+  navigator.clipboard.writeText(val)
+    .then(()=>toast('✓ Prompt copiado!'))
+    .catch(()=>{
+      // fallback
+      document.getElementById('prompt').select();
+      document.execCommand('copy');
+      toast('✓ Copiado!');
+    });
+}
+
+function limpar(){
+  document.getElementById('prompt').value='';
+  toast('Prompt limpo');
+}
+
+let toastT;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),2200);
+}
+</script>
+</body>
+</html>
