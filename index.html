@@ -1,157 +1,114 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Prompt Builder – Anime Trader</title>
+  <title>Anime Trader Prompt Builder</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0f172a, #020617);
-      color: #e5e7eb;
-      padding: 24px;
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+      background:linear-gradient(135deg,#020617,#0f172a);
+      color:#e5e7eb; padding:24px;
     }
-    h1 {
-      font-size: 1.6rem;
-      margin-bottom: 8px;
-    }
-    p {
-      opacity: 0.85;
-      max-width: 700px;
-    }
-    .container {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
-      max-width: 1100px;
-      margin: auto;
-    }
-    .card {
-      background: #020617;
-      border: 1px solid #1e293b;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-    .character {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 20px;
-      align-items: center;
-    }
-    .avatar {
-      width: 160px;
-      height: 160px;
-      border-radius: 16px;
-      background: #020617;
-      border: 1px dashed #334155;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #64748b;
-      text-align: center;
-      font-size: 0.85rem;
-    }
-    textarea {
-      width: 100%;
-      min-height: 220px;
-      resize: vertical;
-      background: #020617;
-      color: #e5e7eb;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-    .options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-    }
-    .option {
-      background: #020617;
-      border: 1px solid #334155;
-      border-radius: 14px;
-      padding: 14px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .option:hover {
-      border-color: #38bdf8;
-      transform: translateY(-2px);
-    }
-    .option.active {
-      border-color: #22d3ee;
-      background: rgba(34,211,238,0.08);
-    }
-    footer {
-      text-align: center;
-      opacity: 0.5;
-      font-size: 0.75rem;
-    }
+    .container{max-width:1100px;margin:auto;display:grid;gap:24px}
+    h1{margin:0;font-size:1.8rem}
+    p{opacity:.85;max-width:760px}
+    .card{background:#020617;border:1px solid #1e293b;border-radius:18px;padding:20px;box-shadow:0 15px 40px rgba(0,0,0,.4)}
+    .character{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center}
+    .avatar{border-radius:16px;overflow:hidden;border:1px solid #334155}
+    .avatar img{width:100%;display:block}
+    textarea{width:100%;min-height:260px;background:#020617;color:#e5e7eb;border:1px solid #334155;border-radius:14px;padding:16px;font-size:.95rem;line-height:1.55}
+    .toolbar{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+    button{background:#020617;border:1px solid #334155;color:#e5e7eb;border-radius:12px;padding:10px 16px;cursor:pointer;transition:.2s}
+    button:hover{border-color:#22d3ee;color:#22d3ee}
+    .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    .option{border:1px solid #334155;border-radius:14px;padding:14px;cursor:pointer;transition:.2s;background:#020617}
+    .option:hover{border-color:#38bdf8;transform:translateY(-2px)}
+    .option.active{border-color:#22d3ee;background:rgba(34,211,238,.08)}
+    footer{text-align:center;font-size:.75rem;opacity:.5}
   </style>
 </head>
 <body>
-  <div class="container">
+<div class="container">
+  <div>
+    <h1>🎨 Anime Trader Prompt Builder</h1>
+    <p>Ferramenta autoral para criar prompts consistentes de arte anime a partir de prints de gráfico. Personagem fixo, emoções e reação de mercado configuráveis.</p>
+  </div>  <div class="card character">
+    <div class="avatar">
+      <img src="avatar.png" alt="Personagem padrão" />
+    </div>
     <div>
-      <h1>🎨 Prompt Builder – Anime Trader</h1>
-      <p>Ferramenta pessoal para gerar prompts consistentes de arte anime a partir dos seus prints de gráfico. Personagem fixo, variáveis controladas.</p>
-    </div><div class="card character">
-  <div class="avatar">Imagem padrão<br/>do personagem<br/>(substituir depois)</div>
-  <textarea id="prompt"></textarea>
-</div>
+      <textarea id="prompt"></textarea>
+      <div class="toolbar">
+        <button onclick="copyPrompt()">📋 Copiar prompt</button>
+        <button onclick="resetOptions()">♻ Resetar opções</button>
+      </div>
+    </div>
+  </div>  <div class="card">
+    <h2>🎭 Humor do Personagem</h2>
+    <div class="options" id="humorOptions"></div>
+  </div>  <div class="card">
+    <h2>📈 Reação do Mercado</h2>
+    <div class="options" id="marketOptions"></div>
+  </div>  <footer>
+    Projeto independente • Pode evoluir para produto • GitHub Pages Ready
+  </footer>
+</div><script>
+const basePrompt = `Crie uma imagem em estilo anime moderno e vibrante, com line-art marcante e leve variação de espessura, cel shading mínimo e sombras chapadas.\n\nPersonagem fixo: homem negro brasileiro inspirado em traços reais, pele marrom escura com subtom quente, rosto alongado e elegante, maxilar definido, nariz médio largo natural, lábios cheios, barba curta bem desenhada em estilo anime. Cabelo preto com volume natural afro/dread estilizado em anime, textura bem definida. Olhos grandes e expressivos, olhar inteligente e confiante.\n\nEstilo cartoon exagerado, proporções levemente alongadas, estética carismática e forte presença. O personagem aparece sempre como trader/analisador de gráficos, interagindo diretamente com um gráfico financeiro (candlestick) estilizado.\n\nAmbiente: mundo totalmente estilizado e não realista, com leve distorção de perspectiva, estética dinâmica, elementos gráficos simplificados, energia de HQ/mangá. Cores brilhantes e saturadas, iluminação gráfica limpa.\n\nHumor do personagem:`;
 
-<div class="card">
-  <h2>🎭 Humor do Personagem</h2>
-  <div class="options" id="humorOptions"></div>
-</div>
+const humors = {
+  "🚀 Euforia / Rompimento": "expressão extremamente confiante e empolgada, sorriso largo, pose dinâmica apontando para cima, sensação de explosão e vitória",
+  "🧠 Análise / Consolidação": "expressão focada e analítica, postura pensativa, energia de estudo e observação",
+  "😬 Tensão / Pullback": "expressão tensa e concentrada, sobrancelhas franzidas, sensação de risco iminente",
+  "😎 Confiança / Tendência": "expressão calma e confiante, leve sorriso, postura relaxada e controle total",
+  "😈 Ironia / Fakeout": "expressão irônica e malandra, sorriso de canto de boca, clima de pegadinha do mercado"
+};
 
-<footer>
-  Uso pessoal • Hospedável no GitHub Pages
-</footer>
+const markets = {
+  "📊 Consolidação": "mercado lateral, candles compactos, sensação de compressão",
+  "🔥 Rompimento": "rompimento explosivo, candles longos, energia ascendente",
+  "🔄 Pullback": "movimento de correção controlada após alta",
+  "⚠ Volatilidade": "movimentos rápidos e caóticos, clima de instabilidade"
+};
 
-  </div>  <script>
-    const basePrompt = `Crie uma imagem em estilo anime moderno e vibrante, com line-art marcante e leve variação de espessura, cel shading mínimo e sombras chapadas. 
+const promptBox = document.getElementById('prompt');
+const humorContainer = document.getElementById('humorOptions');
+const marketContainer = document.getElementById('marketOptions');
 
-Personagem fixo: jovem homem negro brasileiro, pele marrom escura, cabelo preto estilo afro/dread estilizado em anime, olhos grandes e expressivos, traços faciais simples e carismáticos. Estilo cartoon exagerado, proporções levemente alongadas, aparência confiante e energética.
+let selectedHumor = "";
+let selectedMarket = "";
 
-O personagem aparece sempre como trader/analisador de gráficos, interagindo com um gráfico financeiro (candlestick) estilizado, que faz parte do cenário.
+function updatePrompt(){
+  promptBox.value = basePrompt + '\n' + selectedHumor + '\nReação do mercado: ' + selectedMarket + '.';
+}
 
-Ambiente: mundo totalmente estilizado e não realista, com leve distorção de perspectiva, estética dinâmica, elementos gráficos simplificados e energia de HQ/mangá. Cores brilhantes e saturadas, iluminação gráfica limpa.
-
-Humor atual do personagem:`;
-
-    const humors = {
-      "🚀 Euforia / Rompimento": "expressão extremamente confiante e empolgada, sorriso largo, pose dinâmica apontando para cima, sensação de rompimento e explosão de energia",
-      "🧠 Análise / Consolidação": "expressão focada e analítica, olhar atento, postura pensativa, clima de expectativa e estudo",
-      "😬 Tensão / Pullback": "expressão tensa e concentrada, sobrancelhas franzidas, energia de risco e atenção",
-      "😎 Confiança / Tendência": "expressão calma e confiante, leve sorriso, postura relaxada, sensação de controle",
-      "😈 Ironia / Fakeout": "expressão irônica e malandra, sorriso de canto de boca, clima de pegadinha do mercado"
+function createOptions(container, data, type){
+  Object.entries(data).forEach(([label,text])=>{
+    const div=document.createElement('div');
+    div.className='option'; div.innerText=label;
+    div.onclick=()=>{
+      [...container.children].forEach(o=>o.classList.remove('active'));
+      div.classList.add('active');
+      if(type==='humor') selectedHumor=text;
+      if(type==='market') selectedMarket=text;
+      updatePrompt();
     };
+    container.appendChild(div);
+  });
+}
 
-    const promptBox = document.getElementById('prompt');
-    const humorContainer = document.getElementById('humorOptions');
+function copyPrompt(){
+  navigator.clipboard.writeText(promptBox.value);
+  alert('Prompt copiado!');
+}
 
-    let selectedHumor = "";
+function resetOptions(){
+  selectedHumor=''; selectedMarket='';
+  document.querySelectorAll('.option').forEach(o=>o.classList.remove('active'));
+  updatePrompt();
+}
 
-    function updatePrompt() {
-      promptBox.value = basePrompt + "\n" + selectedHumor + ".";
-    }
-
-    Object.entries(humors).forEach(([label, text]) => {
-      const div = document.createElement('div');
-      div.className = 'option';
-      div.innerText = label;
-      div.onclick = () => {
-        document.querySelectorAll('.option').forEach(o => o.classList.remove('active'));
-        div.classList.add('active');
-        selectedHumor = text;
-        updatePrompt();
-      };
-      humorContainer.appendChild(div);
-    });
-
-    updatePrompt();
-  </script></body>
+createOptions(humorContainer, humors, 'humor');
+createOptions(marketContainer, markets, 'market');
+updatePrompt();
+</script></body>
 </html>
