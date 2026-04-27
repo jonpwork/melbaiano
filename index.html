@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prompt Builder – Anime Trader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      color: #e5e7eb;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+    p {
+      opacity: 0.85;
+      max-width: 700px;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      max-width: 1100px;
+      margin: auto;
+    }
+    .card {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    .character {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    .avatar {
+      width: 160px;
+      height: 160px;
+      border-radius: 16px;
+      background: #020617;
+      border: 1px dashed #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      resize: vertical;
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .option {
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .option:hover {
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+    }
+    .option.active {
+      border-color: #22d3ee;
+      background: rgba(34,211,238,0.08);
+    }
+    footer {
+      text-align: center;
+      opacity: 0.5;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div>
+      <h1>🎨 Prompt Builder – Anime Trader</h1>
+      <p>Ferramenta pessoal para gerar prompts consistentes de arte anime a partir dos seus prints de gráfico. Personagem fixo, variáveis controladas.</p>
+    </div><div class="card character">
+  <div class="avatar">Imagem padrão<br/>do personagem<br/>(substituir depois)</div>
+  <textarea id="prompt"></textarea>
+</div>
+
+<div class="card">
+  <h2>🎭 Humor do Personagem</h2>
+  <div class="options" id="humorOptions"></div>
+</div>
+
+<footer>
+  Uso pessoal • Hospedável no GitHub Pages
+</footer>
+
+  </div>  <script>
+    const basePrompt = `Crie uma imagem em estilo anime moderno e vibrante, com line-art marcante e leve variação de espessura, cel shading mínimo e sombras chapadas. 
+
+Personagem fixo: jovem homem negro brasileiro, pele marrom escura, cabelo preto estilo afro/dread estilizado em anime, olhos grandes e expressivos, traços faciais simples e carismáticos. Estilo cartoon exagerado, proporções levemente alongadas, aparência confiante e energética.
+
+O personagem aparece sempre como trader/analisador de gráficos, interagindo com um gráfico financeiro (candlestick) estilizado, que faz parte do cenário.
+
+Ambiente: mundo totalmente estilizado e não realista, com leve distorção de perspectiva, estética dinâmica, elementos gráficos simplificados e energia de HQ/mangá. Cores brilhantes e saturadas, iluminação gráfica limpa.
+
+Humor atual do personagem:`;
+
+    const humors = {
+      "🚀 Euforia / Rompimento": "expressão extremamente confiante e empolgada, sorriso largo, pose dinâmica apontando para cima, sensação de rompimento e explosão de energia",
+      "🧠 Análise / Consolidação": "expressão focada e analítica, olhar atento, postura pensativa, clima de expectativa e estudo",
+      "😬 Tensão / Pullback": "expressão tensa e concentrada, sobrancelhas franzidas, energia de risco e atenção",
+      "😎 Confiança / Tendência": "expressão calma e confiante, leve sorriso, postura relaxada, sensação de controle",
+      "😈 Ironia / Fakeout": "expressão irônica e malandra, sorriso de canto de boca, clima de pegadinha do mercado"
+    };
+
+    const promptBox = document.getElementById('prompt');
+    const humorContainer = document.getElementById('humorOptions');
+
+    let selectedHumor = "";
+
+    function updatePrompt() {
+      promptBox.value = basePrompt + "\n" + selectedHumor + ".";
+    }
+
+    Object.entries(humors).forEach(([label, text]) => {
+      const div = document.createElement('div');
+      div.className = 'option';
+      div.innerText = label;
+      div.onclick = () => {
+        document.querySelectorAll('.option').forEach(o => o.classList.remove('active'));
+        div.classList.add('active');
+        selectedHumor = text;
+        updatePrompt();
+      };
+      humorContainer.appendChild(div);
+    });
+
+    updatePrompt();
+  </script></body>
+</html>
