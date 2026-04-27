@@ -1,136 +1,401 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Avatar Anime – Prompt Base</title>
+  <title>EMC3 - Avatar Creator by Jon & Aurora</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.7);
+    }
+
     * {
       box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-}
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-.container {
-  width: 100%;
-  max-width: 1100px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-}
+    body {
+      min-height: 100vh;
+      /* Fundo simulando um ambiente moderno e corporativo/criativo desfocado */
+      background: linear-gradient(135deg, #1a2a6c, #11998e, #38ef7d);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-main);
+      padding: 20px;
+    }
 
-.image-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-.image-wrapper img {
-  max-width: 280px;
-  width: 100%;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
+    /* Top Bar / Avatar */
+    .top-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 30px;
+      z-index: 10;
+    }
 
-.prompt-card {
-  width: 100%;
-  background: rgba(255,255,255,0.08);
-  border-radius: 20px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  backdrop-filter: blur(8px);
-}
+    .avatar-container {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 3px solid #64b5f6;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
 
-.prompt-card h1 {
-  margin: 0;
-  font-size: 1.4rem;
-  text-align: center;
-}
+    .avatar-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-textarea {
-  width: 100%;
-  min-height: 260px;
-  resize: vertical;
-  border-radius: 14px;
-  border: none;
-  padding: 16px;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
+    .repo-info {
+      font-size: 0.85rem;
+      color: var(--text-main);
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+      font-weight: 500;
+    }
 
-textarea:focus {
-  outline: none;
-}
+    /* Main Container */
+    .app-container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 10;
+    }
 
-.actions {
-  display: flex;
-  justify-content: center;
-}
+    /* Output Preview */
+    .preview-section {
+      width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
 
-button {
-  padding: 12px 28px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: bold;
-  background: linear-gradient(135deg, #ff9800, #ff5722);
-  color: #fff;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+    .preview-section h2 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: var(--text-main);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
 
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-}
+    .image-wrapper {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      background: rgba(0,0,0,0.2);
+    }
 
-footer {
-  font-size: 0.75rem;
-  opacity: 0.6;
-  text-align: center;
-}
+    .image-wrapper img {
+      width: 100%;
+      max-height: 50vh;
+      object-fit: cover;
+      display: block;
+    }
 
+    /* Controls Grid */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+      .app-container {
+        flex-direction: row;
+        align-items: flex-end;
+      }
+      .preview-section {
+        flex: 1;
+        margin-bottom: 0;
+      }
+      .controls-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+
+    /* Glass Panels */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .glass-panel h3 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Prompt Editor */
+    .prompt-container {
+      display: flex;
+      gap: 15px;
+      align-items: stretch;
+    }
+
+    textarea {
+      flex: 1;
+      min-height: 140px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 15px;
+      color: #fff;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      transition: border 0.3s ease;
+    }
+
+    textarea:focus {
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      color: #fff;
+      padding: 0 20px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .copy-btn i {
+      font-size: 1.5rem;
+    }
+
+    /* Edit Presets */
+    .presets-container {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .presets-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    .presets-container::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 10px;
+    }
+
+    .preset-card {
+      min-width: 90px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .preset-card:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .preset-card .icon-placeholder {
+      font-size: 1.8rem;
+    }
+
+    .preset-card span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    /* Toast Notification */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 50px;
+      padding: 12px 24px;
+      position: fixed;
+      z-index: 100;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    #toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+
+    @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
   </style>
 </head>
 <body>
-  <div class="container"><!-- Imagem fixa do repositório -->
-<div class="image-wrapper">
-  <img src="./jonanime.png" alt="Avatar Anime Base" />
-</div>
 
-<!-- Card do prompt -->
-<div class="prompt-card">
-  <h1>Prompt Base (editável)</h1>
-  <textarea id="prompt">
-
-Crie uma imagem em um estilo de arte anime popular a partir do elemento enviado. Use line-work marcante, com leve variação, e cel shading mínimo com formas chapadas de sombra. Use cores brilhantes e saturadas e uma iluminação gráfica limpa. O estilo traz proporções de personagem exageradas e em estilo cartoon, com traços faciais simples e muito expressivos que permitem uma ampla gama de emoções, além de anatomia alongada e bem variada. Transforme o ambiente em um espaço levemente distorcido, com uma distorção de perspectiva divertida e objetos simplificados. A composição e o tom devem ter energia, animação e comicidade, em um mundo totalmente estilizado e não realista. </textarea>
-
-<div class="actions">
-    <button onclick="copiarPrompt()">Copiar prompt</button>
+  <div class="top-bar">
+    <div class="avatar-container">
+      <img src="./jonanime.png" alt="Jon Avatar" onerror="this.src='https://via.placeholder.com/70/64b5f6/ffffff?text=J'">
+    </div>
+    <div class="repo-info">arquivo: jonanime / repositório: EMC3_Creative_Assets</div>
   </div>
-</div>
 
-<footer>
-  Avatar anime • prompt base fixo • pronto para evoluir por emoções e cards
-</footer>
+  <div class="app-container">
+    
+    <div class="preview-section">
+      <h2>Output Preview</h2>
+      <div class="image-wrapper">
+        <img src="./jonanime.png" alt="Preview da Imagem" onerror="this.src='https://via.placeholder.com/600x800/1a2a6c/ffffff?text=Preview+Aqui'">
+      </div>
+    </div>
 
-  </div>  <script>
+    <div class="controls-wrapper">
+      
+      <div class="glass-panel">
+        <h3>Prompt Editor</h3>
+        <div class="prompt-container">
+          <textarea id="prompt">Crie uma imagem em um estilo de arte anime popular a partir do elemento enviado. Use line-work marcante, com leve variação, e cel shading mínimo com formas chapadas de sombra. Use cores brilhantes e saturadas e uma iluminação gráfica limpa. O estilo traz proporções de personagem exageradas e em estilo cartoon, com traços faciais simples e muito expressivos que permitem uma ampla gama de emoções, além de anatomia alongada e bem variada. Transforme o ambiente em um espaço levemente distorcido, com uma distorção de perspectiva divertida e objetos simplificados. A composição e o tom devem ter energia, animação e comicidade, em um mundo totalmente estilizado e não realista.</textarea>
+          <button class="copy-btn" onclick="copiarPrompt()">
+            <i class="fa-regular fa-copy"></i>
+            <span>COPY<br>TEXT</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="glass-panel">
+        <h3>Edit Presets</h3>
+        <div class="presets-container">
+          <div class="preset-card" onclick="adicionarAoPrompt(', terno cinza elegante')">
+            <div class="icon-placeholder">👔</div>
+            <span>Change Suit<br>Color: Grey</span>
+          </div>
+          <div class="preset-card" onclick="adicionarAoPrompt(', sorriso grande e expressivo')">
+            <div class="icon-placeholder">😁</div>
+            <span>Change Expression:<br>Big Smile</span>
+          </div>
+          <div class="preset-card" onclick="adicionarAoPrompt(', segurando um laptop moderno')">
+            <div class="icon-placeholder">💻</div>
+            <span>Add: Laptop<br>in hand</span>
+          </div>
+          <div class="preset-card" onclick="adicionarAoPrompt(', fundo com vista panorâmica da cidade')">
+            <div class="icon-placeholder">🏙️</div>
+            <span>Background:<br>City View</span>
+          </div>
+          <div class="preset-card" onclick="adicionarAoPrompt(', iluminação noturna cyberpunk')">
+            <div class="icon-placeholder">🌙</div>
+            <span>Lighting:<br>Night Vibe</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast">Prompt copiado para a área de transferência!</div>
+
+  <script>
+    // Função para copiar o prompt
     function copiarPrompt() {
       const textarea = document.getElementById('prompt');
       textarea.select();
-      textarea.setSelectionRange(0, 99999);
-      navigator.clipboard.writeText(textarea.value);
-      alert('Prompt copiado!');
+      textarea.setSelectionRange(0, 99999); // Para dispositivos móveis
+      
+      navigator.clipboard.writeText(textarea.value).then(() => {
+        mostrarToast();
+      }).catch(err => {
+        console.error('Erro ao copiar: ', err);
+      });
     }
-  </script></body>
+
+    // Função para adicionar os presets ao texto existente
+    function adicionarAoPrompt(textoAdicional) {
+      const textarea = document.getElementById('prompt');
+      // Adiciona o texto ao final, garantindo que haja um espaço antes se não houver
+      if (textarea.value.trim() !== '') {
+        textarea.value = textarea.value.trim() + textoAdicional;
+      } else {
+        textarea.value = textoAdicional.replace(/^,\s*/, ''); // Remove vírgula inicial se estiver vazio
+      }
+      
+      // Pequeno efeito visual para mostrar que atualizou
+      textarea.style.borderColor = '#38ef7d';
+      setTimeout(() => {
+        textarea.style.borderColor = 'rgba(255,255,255,0.1)';
+      }, 500);
+    }
+
+    // Função para exibir o aviso de "Copiado"
+    function mostrarToast() {
+      const toast = document.getElementById("toast");
+      toast.className = "show";
+      setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+  </script>
+</body>
 </html>
